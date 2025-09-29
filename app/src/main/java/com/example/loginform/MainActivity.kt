@@ -29,13 +29,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyLoginApp() {
+    // Snackbar host state to show success message
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { inner ->
         LoginForm(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(inner)
-                .padding(24.dp),
+                .padding(24.dp), // padding around the form
             snackbarHostState = snackbarHostState
         )
     }
@@ -44,9 +45,12 @@ fun MyLoginApp() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginForm(modifier: Modifier = Modifier, snackbarHostState: SnackbarHostState) {
+    // Form state variables
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showPass by remember { mutableStateOf(false) }
+
+    // Error messages for validation
     var userError by remember { mutableStateOf<String?>(null) }
     var passError by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
@@ -54,6 +58,7 @@ fun LoginForm(modifier: Modifier = Modifier, snackbarHostState: SnackbarHostStat
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("Login", style = MaterialTheme.typography.headlineSmall)
 
+        // Username field
         OutlinedTextField(
             value = username,
             onValueChange = {
@@ -67,6 +72,7 @@ fun LoginForm(modifier: Modifier = Modifier, snackbarHostState: SnackbarHostStat
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Password field with show/hide toggle
         OutlinedTextField(
             value = password,
             onValueChange = {
@@ -86,12 +92,14 @@ fun LoginForm(modifier: Modifier = Modifier, snackbarHostState: SnackbarHostStat
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Submit button
         Button(
             onClick = {
                 var ok = true
                 if (username.isBlank()) { userError = "Username is required"; ok = false }
                 if (password.isBlank()) { passError = "Password is required"; ok = false }
                 if (ok) {
+                    // Show snackbar if form is valid
                     scope.launch { snackbarHostState.showSnackbar("Login submitted") }
                 }
             },
